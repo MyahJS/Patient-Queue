@@ -60,6 +60,8 @@ PQueue& PQueue::operator=(const PQueue& rhs)
         m_heap = copyRecursive(rhs.m_heap); // recursively copy nodes from rhs heap
         m_size = rhs.m_size;
     }
+
+    return *this;
 }
 void PQueue::mergeWithQueue(PQueue& rhs) 
 {
