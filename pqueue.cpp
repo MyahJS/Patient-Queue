@@ -52,13 +52,15 @@ PQueue& PQueue::operator=(const PQueue& rhs)
     // preconditions: rhs and object exist
     // postconditions: copy the passed heap into the current object
 
-    clear();
-    m_priorFunc = rhs.m_priorFunc;
-    m_heapType = rhs.m_heapType;
-    m_structure = rhs.m_structure;
-    if (rhs.m_heap){
-        m_heap = copyRecursive(rhs.m_heap); // recursively copy nodes from rhs heap
-        m_size = rhs.m_size;
+    if (this!=&rhs){
+        clear();
+        m_priorFunc = rhs.m_priorFunc;
+        m_heapType = rhs.m_heapType;
+        m_structure = rhs.m_structure;
+        if (rhs.m_heap){
+            m_heap = copyRecursive(rhs.m_heap); // recursively copy nodes from rhs heap
+            m_size = rhs.m_size;
+        }
     }
 
     return *this;
