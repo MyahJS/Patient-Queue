@@ -84,7 +84,8 @@ void PQueue::mergeWithQueue(PQueue& rhs)
 
     m_heap = mergeRecursive(m_heap, rhs.m_heap);    // recursively merge two heaps
     m_size += rhs.m_size;
-    rhs.clear();    // empty rhs
+    rhs.m_heap = nullptr;
+    rhs.m_size = 0;
 }
 
 void PQueue::insertPatient(const Patient& patient) 
