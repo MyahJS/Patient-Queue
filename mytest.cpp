@@ -267,8 +267,11 @@ class Tester{
         // case 3: error case
 
         result = true;
+        // create empty queue
+        PQueue cQueue(priorityFn1, MAXHEAP, LEFTIST);
+
         try{
-            bQueue.getNextPatient();
+            cQueue.getNextPatient();
         } catch(out_of_range& e){
             result = result && (string(e.what())=="Queue is empty. Failed to get the next patient.");
         }
