@@ -436,6 +436,8 @@ class Tester{
             }
 
         all_result = all_result && result;
+
+        return all_result;
     }
     bool copyTest(){
         bool all_result = true;
