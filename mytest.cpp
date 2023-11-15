@@ -248,7 +248,7 @@ class Tester{
             bQueue.insertPatient(patient);
         }
 
-        int prev = bQueue.m_priorFunc(bQueue.getNextPatient()); 
+        prev = bQueue.m_priorFunc(bQueue.getNextPatient()); 
         while (bQueue.m_heap){
             if (prev<bQueue.m_priorFunc(bQueue.m_heap->getPatient()))
                 result = false;
@@ -582,7 +582,7 @@ int main(){
     test.setPriorityTest();
     test.copyTest();
     test.assignmentTest();
-    
+
     Random nameGen(0,NUMNAMES-1);
     Random temperatureGen(MINTEMP,MAXTEMP);
     Random oxygenGen(MINOX,MAXOX);
