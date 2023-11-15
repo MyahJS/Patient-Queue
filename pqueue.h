@@ -231,6 +231,79 @@ private:
             printRecursive(root->m_right);
         }
     }
+    // helper for checking min heap property
+    bool isMinHeap(Node* root, prifn_t priorFn) const{
+        if (!root)
+            return true;    // empty tree is valid
+        
+        if (root->m_left){
+            if (priorFn(root->m_left->getPatient())<priorFn(root->getPatient()))
+                return false;
+        }
+        if (root->m_right){
+            if (priorFn(root->m_right->getPatient())<priorFn(root->getPatient()))
+                return false;
+        }
+
+        return isMinHeap(root->m_left, priorFn)&&isMinHeap(root->m_right, priorFn);
+    }
+    // helper for checking max heap property
+    bool isMaxHeap(Node* root, prifn_t priorFn) const{
+        if (!root)
+            return true;
+        
+        if (root->m_left){
+            if (priorFn(root->m_left->getPatient())>priorFn(root->getPatient()))
+                return false;
+        }
+        if (root->m_right){
+            if (priorFn(root->m_right->getPatient())>priorFn(root->getPatient()))
+                return false;
+        }
+
+        return isMinHeap(root->m_left, priorFn)&&isMinHeap(root->m_right, priorFn);
+    }
+    // helper for checking npl values of nodes in a heap 
+    bool accurateNPL(Node* root) const{
+        if (!root)
+            return true;
+
+        // get npl of left and right child
+        int leftNPL = (root->m_left) ? root->m_left->getNPL() : 0;
+        int rightNPL = (root->m_right) ? root->m_right->getNPL() : 0;
+
+        // correct npl is minimum npl of children plus 1
+        int correctNPL = min(leftNPL, rightNPL) + 1;
+
+        if (root->getNPL()!=correctNPL)
+            return false;
+
+        return accurateNPL(root->m_left)&&accurateNPL(root->m_right);
+    }
+    // helper for checking if a heap is leftist
+    bool isLeftist(Node* root) const{
+        if (!root)
+            return true;
+
+        int leftNPL = (root->m_left) ? root->m_left->getNPL() : 0;
+        int rightNPL = (root->m_right) ? root->m_right->getNPL() : 0;
+
+        if (leftNPL<rightNPL)
+            return false;
+
+        return isLeftist(root->m_left)&&isLeftist(root->m_right);
+    }
+    // helper for checking equivalence of two heaps
+    bool isEqual(Node* root1, Node* root2){
+        if (!root1 && !root2)
+            return true;
+        
+        if (root1&&root2){
+            return (root1->getPatient()==root2->getPatient())&&isEqual(root1->m_left, root2->m_left)&&isEqual(root1->m_right, root2->m_right);
+        }
+
+        return false;
+    }
 };
 
 #endif

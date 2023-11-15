@@ -127,9 +127,462 @@ public:
 
 class Tester{
     public:
+
+    bool insertTest(){
+        bool all_result = true;
+        bool result;
+
+        // case 1: min heap
+
+        result = true;
+        // create a min heap
+        Random nameGen(0,NUMNAMES-1);
+        Random temperatureGen(MINTEMP,MAXTEMP);
+        Random oxygenGen(MINOX,MAXOX);
+        Random respiratoryGen(MINRR,MAXRR);
+        Random bloodPressureGen(MINBP,MAXBP);
+        Random nurseOpinionGen(MINOPINION,MAXOPINION);
+        PQueue aQueue(priorityFn2, MINHEAP, LEFTIST);
+        for (int i=0;i<300;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            aQueue.insertPatient(patient);
+        }
+
+        // check if min heap property upheld
+        result = aQueue.isMinHeap(aQueue.m_heap, aQueue.m_priorFunc);
+
+        cout << endl << "Insert normal case (min heap): ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        // case 2: max heap
+
+        result = true;
+        PQueue bQueue(priorityFn1, MAXHEAP, LEFTIST);
+        for (int i=0;i<300;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            bQueue.insertPatient(patient);
+        }
+
+        result = bQueue.isMaxHeap(bQueue.m_heap, bQueue.m_priorFunc);
+
+        cout << endl << "Insert normal case (max heap): ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        return all_result;
+    }
+    bool removeTest(){
+        bool all_result = true;
+        bool result;
+
+        // case 1: min heap
+
+        result = true;
+        // create a min heap
+        Random nameGen(0,NUMNAMES-1);
+        Random temperatureGen(MINTEMP,MAXTEMP);
+        Random oxygenGen(MINOX,MAXOX);
+        Random respiratoryGen(MINRR,MAXRR);
+        Random bloodPressureGen(MINBP,MAXBP);
+        Random nurseOpinionGen(MINOPINION,MAXOPINION);
+        PQueue aQueue(priorityFn2, MINHEAP, LEFTIST);
+        for (int i=0;i<300;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            aQueue.insertPatient(patient);
+        }
+
+        // remove nodes and check if each is greater than the last
+        int prev = aQueue.m_priorFunc(aQueue.getNextPatient()); // will hold priority of the last removed node
+        while (aQueue.m_heap){
+            if (prev>aQueue.m_priorFunc(aQueue.m_heap->getPatient()))
+                result = false;
+            prev = aQueue.m_priorFunc(aQueue.getNextPatient());
+        }
+
+        cout << endl << "Remove test normal case (min heap): ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        // case 2: max heap
+
+        result = true;
+        PQueue bQueue(priorityFn1, MAXHEAP, LEFTIST);
+        for (int i=0;i<300;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            bQueue.insertPatient(patient);
+        }
+
+        int prev = bQueue.m_priorFunc(bQueue.getNextPatient()); 
+        while (bQueue.m_heap){
+            if (prev<bQueue.m_priorFunc(bQueue.m_heap->getPatient()))
+                result = false;
+            prev = bQueue.m_priorFunc(bQueue.getNextPatient());
+        }
+
+        cout << endl << "Remove test normal case (max heap): ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        // case 3: error case
+
+        result = true;
+        try{
+            bQueue.getNextPatient();
+        } catch(out_of_range& e){
+            result = result && (string(e.what())=="Queue is empty. Failed to get the next patient.");
+        }
+
+        cout << endl << "Remove test error case: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        return all_result;
+    }
+    bool leftistTest(){
+        bool all_result = true;
+        bool result;
+
+        //create leftist heap
+        Random nameGen(0,NUMNAMES-1);
+        Random temperatureGen(MINTEMP,MAXTEMP);
+        Random oxygenGen(MINOX,MAXOX);
+        Random respiratoryGen(MINRR,MAXRR);
+        Random bloodPressureGen(MINBP,MAXBP);
+        Random nurseOpinionGen(MINOPINION,MAXOPINION);
+        PQueue aQueue(priorityFn2, MINHEAP, LEFTIST);
+        for (int i=0;i<300;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            aQueue.insertPatient(patient);
+        }
+
+        // check that nodes have accurate npl
+        result = aQueue.accurateNPL(aQueue.m_heap);
+
+        cout << endl << "Leftist heap NPL accuracy test: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        // check that heap is leftist
+        result = aQueue.isLeftist(aQueue.m_heap);
+
+        cout << endl << "Leaftist heap property test: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        return all_result;
+    }
+    bool setPriorityTest(){
+        bool all_result = true;
+        bool result;
+
+        // create minheap with priorFN2
+        Random nameGen(0,NUMNAMES-1);
+        Random temperatureGen(MINTEMP,MAXTEMP);
+        Random oxygenGen(MINOX,MAXOX);
+        Random respiratoryGen(MINRR,MAXRR);
+        Random bloodPressureGen(MINBP,MAXBP);
+        Random nurseOpinionGen(MINOPINION,MAXOPINION);
+        PQueue aQueue(priorityFn2, MINHEAP, LEFTIST);
+        for (int i=0;i<10;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            aQueue.insertPatient(patient);
+        }
+
+        // now set to max heap with priorFN1
+        aQueue.setPriorityFn(priorityFn1, MAXHEAP);
+
+        // check if max heap
+        result = aQueue.isMaxHeap(aQueue.m_heap, aQueue.m_priorFunc);
+
+        cout << endl << "SetPriority test: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        return all_result;
+    }
+    bool mergeTest(){
+        bool all_result = true;
+        bool result;
+
+        // case 1: edge case
+        
+        result = true;
+        // create empty queue
+        PQueue aQueue(priorityFn1, MAXHEAP, SKEW);
+
+        // create valid populated queue
+        Random nameGen(0,NUMNAMES-1);
+        Random temperatureGen(MINTEMP,MAXTEMP);
+        Random oxygenGen(MINOX,MAXOX);
+        Random respiratoryGen(MINRR,MAXRR);
+        Random bloodPressureGen(MINBP,MAXBP);
+        Random nurseOpinionGen(MINOPINION,MAXOPINION);
+        PQueue bQueue(priorityFn1, MAXHEAP, SKEW);
+        for (int i=0;i<10;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            bQueue.insertPatient(patient);
+        }
+
+        aQueue.mergeWithQueue(bQueue);
+        // check that first queue populated and second empty (merge occured)
+        result = aQueue.m_size==10 && bQueue.m_size==0;
+
+        cout << endl << "Merge test edge case: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        // case 2: error case 
+
+        result = true;
+        // create two queues with different priority functions
+        PQueue cQueue(priorityFn1, MAXHEAP, LEFTIST);
+        PQueue dQueue(priorityFn2, MINHEAP, LEFTIST);
+
+        try{
+            cQueue.mergeWithQueue(dQueue);
+        } catch (domain_error& e) {
+            result = result && (string(e.what())=="Cannot merge queues with different priority functions. Merge failed.");
+        }
+
+        cout << endl << "Merge test error case: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+    }
+    bool copyTest(){
+        bool all_result = true;
+        bool result;
+
+        // case 1: normal case
+
+        result = true;
+        // create populated queue
+        Random nameGen(0,NUMNAMES-1);
+        Random temperatureGen(MINTEMP,MAXTEMP);
+        Random oxygenGen(MINOX,MAXOX);
+        Random respiratoryGen(MINRR,MAXRR);
+        Random bloodPressureGen(MINBP,MAXBP);
+        Random nurseOpinionGen(MINOPINION,MAXOPINION);
+        PQueue aQueue(priorityFn2, MINHEAP, LEFTIST);
+        for (int i=0;i<10;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            aQueue.insertPatient(patient);
+        }
+
+        // create new queue using populated queue
+        PQueue bQueue(aQueue);
+
+        // check that queues are equal
+        result = result && bQueue.isEqual(bQueue.m_heap, aQueue.m_heap);
+
+        cout << endl << "Copy constructor test normal case: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        // case 2: edge case
+
+        result = true;
+        // create empty queue
+        PQueue cQueue(priorityFn1, MAXHEAP, LEFTIST);
+
+        // create heap using empty heap
+        PQueue dQueue(cQueue);
+
+        // check that member variables are equal
+        result = result && (dQueue.m_priorFunc==priorityFn1) && (dQueue.m_heapType==MAXHEAP) && (dQueue.m_structure==LEFTIST);
+
+        cout << endl << "Copy constructor test edge case: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        return all_result;
+    }
+    bool assignmentTest(){
+        bool all_result = true;
+        bool result;
+
+        // case 1: normal case
+
+        result = true;
+        // create populated queue
+        Random nameGen(0,NUMNAMES-1);
+        Random temperatureGen(MINTEMP,MAXTEMP);
+        Random oxygenGen(MINOX,MAXOX);
+        Random respiratoryGen(MINRR,MAXRR);
+        Random bloodPressureGen(MINBP,MAXBP);
+        Random nurseOpinionGen(MINOPINION,MAXOPINION);
+        PQueue aQueue(priorityFn2, MINHEAP, LEFTIST);
+        for (int i=0;i<10;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            aQueue.insertPatient(patient);
+        }
+
+        // assign populated queue to an empty queue
+        PQueue bQueue(priorityFn2, MINHEAP, LEFTIST);
+        bQueue = aQueue;
+
+        // check that queues are equal
+        result = result && bQueue.isEqual(bQueue.m_heap, aQueue.m_heap);
+
+        cout << endl << "Assignment operator test normal case: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        // case 2: edge case
+
+        result = true;
+        PQueue cQueue(priorityFn1, MAXHEAP, SKEW);
+        for (int i=0;i<10;i++){
+            Patient patient(nameDB[nameGen.getRandNum()],
+                        temperatureGen.getRandNum(),
+                        oxygenGen.getRandNum(),
+                        respiratoryGen.getRandNum(),
+                        bloodPressureGen.getRandNum(),
+                        nurseOpinionGen.getRandNum());
+            cQueue.insertPatient(patient);
+        }
+
+        // assign empty queue to the populated queue
+        PQueue dQueue(priorityFn1, MAXHEAP, SKEW);
+        cQueue = dQueue;
+
+        // check that populated queue is now empty
+        result = result && (!cQueue.m_heap);
+
+        cout << endl << "Assignment operator test edge case: ";
+            if (result){
+                cout << "PASS" << endl;
+            } else {
+                cout << "FAIL" << endl;
+            }
+
+        all_result = all_result && result;
+
+        return all_result;
+    }
 };
 
 int main(){
+    Tester test;
+
+    test.insertTest();
+    test.removeTest();
+    test.leftistTest();
+    test.mergeTest();
+    test.setPriorityTest();
+    test.copyTest();
+    test.assignmentTest();
+    
     Random nameGen(0,NUMNAMES-1);
     Random temperatureGen(MINTEMP,MAXTEMP);
     Random oxygenGen(MINOX,MAXOX);
